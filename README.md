@@ -1,4 +1,3 @@
-symfony-rest-example.dev
-========================
+# symfony3restapi
+Symfony 3 REST API with Accounts, User and Admins System
 
-A Symfony project created on July 25, 2016, 9:02 am.
