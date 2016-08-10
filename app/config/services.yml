@@ -1,0 +1,170 @@
+parameters:
+    crv.user.entity: 'AppBundle\Entity\User'
+#    crv.account.entity: 'AppBundle\Entity\Account'
+
+services:
+
+    # -- EVENTS -- #
+    crv.event.listener.content_type_listener:
+        class: AppBundle\Event\Listener\ContentTypeListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    # -- DOCTRINE ENTITY REPOSITORY --
+    crv.doctrine_entity_repository.account:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\Account
+
+    crv.doctrine_entity_repository.user:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\User
+
+    # -- FACTORY --
+    crv.factory.account_factory:
+        class: AppBundle\Factory\AccountFactory
+
+    # -- REPOSITORY --
+    crv.repository.common_doctrine_repository:
+            class: AppBundle\Repository\Doctrine\CommonDoctrineRepository
+            arguments:
+                - "@doctrine.orm.entity_manager"
+
+    crv.repository.doctrine_user_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineUserRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+
+    crv.repository.restricted_user_repository:
+        class: AppBundle\Repository\Restricted\RestrictedUserRepository
+        arguments:
+            - "@crv.repository.doctrine_user_repository"
+            - "@security.authorization_checker"
+
+    crv.repository.doctrine_account_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineAccountRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.account"
+
+    crv.repository.restricted_account_repository:
+        class: AppBundle\Repository\Restricted\RestrictedAccountRepository
+        arguments:
+            - "@crv.repository.doctrine_account_repository"
+            - "@security.authorization_checker"
+
+
+    # -- HANDLER --
+    crv.handler.restricted_user_handler:
+        class: AppBundle\Handler\UserHandler
+        arguments:
+            - "@crv.form.handler.restricted_user_form_handler"
+            - "@crv.repository.restricted_user_repository"
+
+    crv.handler.admin_user_handler:
+            class: AppBundle\Handler\AdminUserHandler
+            arguments:
+                - "@crv.form.handler.restricted_user_form_handler"
+                - "@crv.form.handler.admin_user_form_handler"
+                - "@crv.repository.restricted_user_repository"
+
+    crv.handler.restricted_account_handler:
+        class: AppBundle\Handler\AccountHandler
+        arguments:
+            - "@crv.form.handler.restricted_account_form_handler"
+            - "@crv.data_transformer.account"
+            - "@crv.repository.restricted_account_repository"
+            - "@crv.factory.account_factory"
+
+    # -- SECURITY ---
+    crv.security.authorization.voter.user_voter:
+        class: AppBundle\Security\Authorization\Voter\UserVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.account_voter:
+        class: AppBundle\Security\Authorization\Voter\AccountVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.admin_user_voter:
+        class: AppBundle\Security\Authorization\Voter\AdminUserVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    # -- FORM --
+    crv.form.type.user:
+        class: AppBundle\Form\Type\UserType
+        arguments:
+            - "%crv.user.entity%"
+        tags:
+            - { name: form.type, alias: user_form }
+
+    crv.form.type.restricted_user:
+        class: AppBundle\Form\Type\UserType
+        arguments:
+            - "%crv.user.entity%"
+        tags:
+            - { name: form.type, alias: restricted_user_form }
+
+    crv.form.type.admin_user:
+        class: AppBundle\Form\Type\AdminUserType
+        arguments:
+            - "%crv.user.entity%"
+        tags:
+            - { name: form.type, alias: admin_user_form }
+
+    crv.form.type.account:
+        class: AppBundle\Form\Type\AccountType
+        arguments:
+            - "@crv.repository.doctrine_user_repository"
+        tags:
+            - { name: form.type, alias: account_form }
+
+    crv.form.type.restricted_account:
+        class: AppBundle\Form\Type\AccountType
+        arguments:
+            - "@crv.repository.doctrine_user_repository"
+        tags:
+            - { name: form.type, alias: restricted_account_form }
+
+    # -- FORM HANDLER -- #
+    crv.form.handler.user_form_handler:
+          class: AppBundle\Form\Handler\FormHandler
+          arguments:
+              - "@form.factory"
+              - "@crv.form.type.user"
+
+    crv.form.handler.restricted_user_form_handler:
+          class: AppBundle\Form\Handler\FormHandler
+          arguments:
+              - "@form.factory"
+              - "@crv.form.type.restricted_user"
+
+    crv.form.handler.admin_user_form_handler:
+          class: AppBundle\Form\Handler\FormHandler
+          arguments:
+              - "@form.factory"
+              - "@crv.form.type.admin_user"
+
+    crv.form.handler.account_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.account"
+
+    crv.form.handler.restricted_account_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.restricted_account"
+
+    # --  DATA TRANSFORMERS -- #
+    crv.data_transformer.account:
+        class: AppBundle\DataTransformer\AccountDataTransformer

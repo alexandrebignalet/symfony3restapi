@@ -1,0 +1,30 @@
+web:
+   restart: always
+   image: tutum/apache-php
+   ports:
+      - "8080:80"
+   volumes:
+      - /home/jiddy/workspace/symfony-rest-example.dev:/var/www/html
+   environment:
+      - ALLOW_OVERRIDE=true
+   links:
+      - database:mysql
+phpmyadmin:
+   image: corbinu/docker-phpmyadmin
+   restart: always
+   ports :
+    - 8081:80
+   environment:
+    - MYSQL_USERNAME=root
+    - MYSQL_PASSWORD=password
+   links:
+    - database:mysql
+database:
+  image: mysql
+  restart: always
+  volumes:
+    - /home/jiddy/workspace/docker/mysql:/var/lib/mysql
+  ports:
+   - 15000:3306
+  environment:
+   MYSQL_ROOT_PASSWORD: password
