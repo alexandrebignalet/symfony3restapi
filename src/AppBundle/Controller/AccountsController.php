@@ -80,7 +80,7 @@ class AccountsController extends FOSRestController implements ClassResourceInter
      * Creates a new Account
      *
      * @ApiDoc(
-     *  input = "AppBundle\Form\Type\AccountFormType",
+     *  input = "AppBundle\Form\Type\AccountType",
      *  output = "AppBundle\Entity\Account",
      *  statusCodes={
      *         201="Returned when a new Account has been successfully created",

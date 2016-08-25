@@ -18,6 +18,7 @@ class DoctrineAccountRepository implements AccountRepositoryInterface, Repositor
      * @var CommonDoctrineRepository
      */
     private $commonRepository;
+
     /**
      * @var AccountEntityRepository
      */

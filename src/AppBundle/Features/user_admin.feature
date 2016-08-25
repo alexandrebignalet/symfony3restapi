@@ -8,7 +8,7 @@ Feature: Manage data via the RESTful API
   Background:
     Given there are Admin Users with the following details:
       | uid | username | email          | password  | roles            |
-      | u7  | alex     | alex@test.com  | adminpass | ROLE_SUPER_ADMIN |
+      | u7  | alex     | alex@test.com  | adminpass | ROLE_ADMIN       |
       | u1  | peter    | peter@test.com | testpass  | ROLE_USER        |
       | u2  | john     | john@test.org  | johnpass  | ROLE_USER        |
     And I am successfully logged in with username: "alex", and password: "adminpass"

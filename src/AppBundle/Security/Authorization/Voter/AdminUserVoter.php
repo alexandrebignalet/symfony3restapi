@@ -8,11 +8,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class AdminUserVoter implements VoterInterface
 {
     const EDIT = 'edit';
+    const VIEW = 'view';
 
     public function supportsAttribute($attribute)
     {
         return in_array($attribute, array(
             self::EDIT,
+            self::VIEW
         ));
     }
 
@@ -42,7 +44,7 @@ class AdminUserVoter implements VoterInterface
         $loggedInUser = $token->getUser();
 
         // make sure there is a user object (i.e. that the user is logged in)
-        if ($loggedInUser->hasRole('ROLE_SUPER_ADMIN')) {
+        if ($loggedInUser->hasRole('ROLE_ADMIN') || $loggedInUser->hasRole('ROLE_SUPER_ADMIN')) {
             return VoterInterface::ACCESS_GRANTED;
         }
 

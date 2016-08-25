@@ -32,7 +32,7 @@ class UserSetupContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given there are users with the following details:
+     * @Given there are Users with the following details:
      * @param TableNode $users
      */
     public function thereAreUsersWithTheFollowingDetails(TableNode $users)

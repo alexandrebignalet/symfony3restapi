@@ -123,17 +123,17 @@ Feature: Manage Account data through API
         }
         """
 
-  @f
-  Scenario: User can PATCH to re-assign an Account to another User
-    When I send a "PATCH" request to "/accounts/a1" with body:
-        """
-        {
-          "users": [{"id":"u3"}]
-        }
-        """
-    Then the response code should be 204
-    And the I follow the link in the Location response header
-    Then the response code should be 403
+  #@f
+  #Scenario: User can PATCH to re-assign an Account to another User
+  #  When I send a "PATCH" request to "/accounts/a1" with body:
+  #      """
+  #      {
+  #        "users": [{"id":"u3"}]
+  #      }
+  #      """
+  #  Then the response code should be 204
+  #  And the I follow the link in the Location response header
+  #  Then the response code should be 403
 
 
   Scenario: User cannot PATCH to assign an Account to no one
@@ -167,54 +167,54 @@ Feature: Manage Account data through API
     When I send a "PATCH" request to "/accounts/madeup"
     Then the response code should be 403
 
-  @f
-  Scenario: User can PUT to replace their Account data
-    When I send a "PUT" request to "/accounts/a1" with body:
-        """
-        {
-          "name": "a replaced account name",
-          "users": [{
-              "id": "u1",
-              "username": "peter",
-              "email": "peter@test.com"
-          }, {
-              "id": "u2",
-              "username": "john",
-              "email": "john@test.org"
-          }]
-        }
-        """
-    Then the response code should be 204
-    And the I follow the link in the Location response header
-    And the response should contain json:
-        """
-        {
-            "id": "a1",
-            "name": "a replaced account name",
-            "users": [{
-                "id": "u1",
-                "username": "peter",
-                "email": "peter@test.com"
-            }, {
-                "id": "u2",
-                "username": "john",
-                "email": "john@test.org"
-            }]
-        }
-        """
+  #@f
+  #Scenario: User can PUT to replace their Account data
+  #  When I send a "PUT" request to "/accounts/a1" with body:
+  #      """
+  #      {
+  #        "name": "a replaced account name",
+  #        "users": [{
+  #            "id": "u1",
+  #            "username": "peter",
+  #            "email": "peter@test.com"
+  #        }, {
+  #            "id": "u2",
+  #            "username": "john",
+  #            "email": "john@test.org"
+  #        }]
+  #      }
+  #      """
+  #  Then the response code should be 204
+  #  And the I follow the link in the Location response header
+  #  And the response should contain json:
+  #      """
+  #      {
+  #          "id": "a1",
+  #          "name": "a replaced account name",
+  #          "users": [{
+  #              "id": "u1",
+  #              "username": "peter",
+  #              "email": "peter@test.com"
+  #          }, {
+  #              "id": "u2",
+  #              "username": "john",
+  #              "email": "john@test.org"
+  #          }]
+  #      }
+  #      """
 
-  @f @refactor-to-account-manager
-  Scenario: User can PUT to re-assign an Account to another User
-    When I send a "PUT" request to "/accounts/a1" with body:
-        """
-        {
-          "name": "some account",
-          "users": [{"id":"u2"}]
-        }
-        """
-    Then the response code should be 204
-    And the I follow the link in the Location response header
-    Then the response code should be 403
+  #@f @refactor-to-account-manager
+  #Scenario: User can PUT to re-assign an Account to another User
+  #  When I send a "PUT" request to "/accounts/a1" with body:
+  #      """
+  #      {
+  #        "name": "some account",
+  #        "users": [{"id":"u2"}]
+  #      }
+  #      """
+  #  Then the response code should be 204
+  #  And the I follow the link in the Location response header
+  #  Then the response code should be 403
 
 
   Scenario: User cannot PUT to assign an Account to no one

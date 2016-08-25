@@ -23,6 +23,24 @@ default:
             accountFactory: "@crv.factory.account_factory"
         - AppBundle\Features\Context\MysqlDatabaseContext:
             em: "@doctrine.orm.entity_manager"
+        - AppBundle\Features\Context\SurveySetupContext:
+            em: "@doctrine.orm.entity_manager"
+            surveyFactory: "@crv.factory.survey_factory"
+        - AppBundle\Features\Context\QuestionSetupContext:
+            em: "@doctrine.orm.entity_manager"
+            questionFactory: "@crv.factory.question_factory"
+        - AppBundle\Features\Context\AnswerSetupContext:
+            em: "@doctrine.orm.entity_manager"
+            answerFactory: "@crv.factory.answer_factory"
+        - AppBundle\Features\Context\CronSurveySetupContext:
+            em: "@doctrine.orm.entity_manager"
+            cronSurveyFactory: "@crv.factory.cron_survey_factory"
+        - AppBundle\Features\Context\SurveyResultSetupContext:
+            em: "@doctrine.orm.entity_manager"
+            surveyResultFactory: "@crv.factory.survey_result_factory"
+        - AppBundle\Features\Context\AnswerResultSetupContext:
+            em: "@doctrine.orm.entity_manager"
+            answerResultFactory: "@crv.factory.answer_result_factory"
 
   extensions:
     Behat\Symfony2Extension:
@@ -31,4 +49,4 @@ default:
         debug: "true"
 
   gherkin:
-          cache: ~
+    cache: ~

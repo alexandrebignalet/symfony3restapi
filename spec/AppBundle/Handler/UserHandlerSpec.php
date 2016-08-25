@@ -4,6 +4,8 @@
 
 namespace spec\AppBundle\Handler;
 
+use AppBundle\Entity\User;
+use AppBundle\Form\Handler\FormHandlerInterface;
 use AppBundle\Repository\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -12,11 +14,14 @@ class UserHandlerSpec extends ObjectBehavior
 {
     private $repository;
 
-    function let(UserRepositoryInterface $repository)
+    private $formHandler;
+
+    function let(FormHandlerInterface $formHandler,UserRepositoryInterface $repository)
     {
+        $this->formHandler = $formHandler;
         $this->repository = $repository;
 
-        $this->beConstructedWith($repository);
+        $this->beConstructedWith($formHandler,$repository);
     }
 
     function it_is_initializable()
@@ -29,7 +34,7 @@ class UserHandlerSpec extends ObjectBehavior
     {
         $id = 777;
         $this->get($id);
-        $this->repository->find($id)->shouldHaveBeenCalled();
+        $this->repository->findOneById($id)->shouldHaveBeenCalled();
     }
 
     function it_cannot_get_ALL()
@@ -39,15 +44,15 @@ class UserHandlerSpec extends ObjectBehavior
 
     function it_cannot_POST()
     {
-        $this->shouldThrow('\DomainException')->during('post', [['param1']]);
+        $this->shouldThrow('\DomainException')->during('post', [['param1'], []]);
     }
 
     function it_cannot_PUT()
     {
-        $this->shouldThrow('\DomainException')->during('put', [['param1'], []]);
+        $this->shouldThrow('\DomainException')->during('put', [['param1'], [], []]);
     }
 
-    function it_should_allow_PATCH(User $user)
+    function it_should_allow_PATCH()
     {
         // to be implemented
     }

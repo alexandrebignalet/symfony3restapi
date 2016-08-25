@@ -54,7 +54,7 @@ class UserHandler implements HandlerInterface
      * @param array $options
      * @return mixed
      */
-    public function post(array $parameters, array $options)
+    public function post(array $parameters, array $options = null)
     {
         throw new \DomainException('The method is not implemented');
     }
@@ -65,7 +65,7 @@ class UserHandler implements HandlerInterface
      * @param array $options
      * @return mixed
      */
-    public function put($resource, array $parameters, array $options)
+    public function put($resource, array $parameters, array $options = null)
     {
         throw new \DomainException('The method is not implemented');
     }

@@ -9,7 +9,6 @@ use JMS\Serializer\Annotation as JMSSerializer;
 use AppBundle\Model\AccountInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class User
@@ -75,6 +74,15 @@ class User extends BaseUser implements UserInterface
     protected $roles;
 
     /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->accounts = new ArrayCollection();
+    }
+
+    /**
      * @param AccountInterface $accountInterface
      * @return \AppBundle\Model\UserInterface
      */
@@ -112,7 +120,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * @return \AppBundle\Model\Collection
+     * @return Collection
      */
     public function getAccounts()
     {

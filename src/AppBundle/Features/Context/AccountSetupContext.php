@@ -30,6 +30,7 @@ class AccountSetupContext implements Context, SnippetAcceptingContext
     /**
      * AccountSetupContext constructor.
      * @param UserManagerInterface $userManager
+     * @param AccountFactoryInterface $accountFactory
      * @param EntityManagerInterface $em
      */
     public function __construct(
@@ -44,6 +45,7 @@ class AccountSetupContext implements Context, SnippetAcceptingContext
 
     /**
      * @Given there are Accounts with the following details:
+     * @param TableNode $accounts
      */
     public function thereAreAccountsWithTheFollowingDetails(TableNode $accounts)
     {

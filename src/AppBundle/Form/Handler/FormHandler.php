@@ -50,7 +50,7 @@ class FormHandler implements FormHandlerInterface
         $form = $this->formFactory->create(get_class($this->formType), $object, $options);
 
         $form->submit($parameters, 'PATCH' !== $method);
-
+        
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

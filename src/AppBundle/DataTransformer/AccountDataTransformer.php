@@ -28,6 +28,7 @@ class AccountDataTransformer
         foreach ($dto->getUsers() as $user) {
             $user->addAccount($account);
         }
+
         return $account;
     }
 }

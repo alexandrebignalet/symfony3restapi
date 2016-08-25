@@ -78,7 +78,7 @@ class UsersController extends FOSRestController implements ClassResourceInterfac
      * Creates a new User by an Admin
      *
      * @ApiDoc(
-     *  input = "AppBundle\Form\Type\UserFormType",
+     *  input = "AppBundle\Form\Type\UserType",
      *  output = "AppBundle\Entity\User",
      *  statusCodes={
      *         201="Returned when a new User has been successfully created",

@@ -4,6 +4,21 @@ parameters:
 
 services:
 
+    # -- VALIDATOR -- #
+    crv.validator.survey_result:
+        class: AppBundle\Validator\Constraints\AnswerNumberEqualQuestionsNumberValidator
+        tags:
+            - { name: validator.constraint_validator, alias: survey_result_validator }
+        arguments:
+            - '@crv.repository.restricted_question_repository'
+
+    # -- BUSINESS LOGIC -- #
+    crv.business.survey_availability_checker:
+        class: AppBundle\Business\SurveyAvailabilityChecker
+        arguments:
+            - "@crv.repository.restricted_cron_survey_repository"
+            - "@security.token_storage"
+
     # -- EVENTS -- #
     crv.event.listener.content_type_listener:
         class: AppBundle\Event\Listener\ContentTypeListener
@@ -11,6 +26,42 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # -- DOCTRINE ENTITY REPOSITORY --
+    crv.doctrine_entity_repository.answer_result:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\AnswerResult
+
+    crv.doctrine_entity_repository.survey_result:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\SurveyResult
+
+    crv.doctrine_entity_repository.cron_survey:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\CronSurvey
+
+    crv.doctrine_entity_repository.answer:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\Answer
+
+    crv.doctrine_entity_repository.question:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\Question
+
+    crv.doctrine_entity_repository.survey:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - AppBundle\Entity\Survey
+
     crv.doctrine_entity_repository.account:
         class: Doctrine\ORM\EntityRepository
         factory: ["@doctrine", getRepository]
@@ -26,6 +77,27 @@ services:
     # -- FACTORY --
     crv.factory.account_factory:
         class: AppBundle\Factory\AccountFactory
+
+    crv.factory.survey_factory:
+        class: AppBundle\Factory\SurveyFactory
+
+    crv.factory.question_factory:
+        class: AppBundle\Factory\QuestionFactory
+
+    crv.factory.answer_factory:
+        class: AppBundle\Factory\AnswerFactory
+
+    crv.factory.cron_survey_factory:
+        class: AppBundle\Factory\CronSurveyFactory
+
+    crv.factory.survey_result_factory:
+        class: AppBundle\Factory\SurveyResultFactory
+        arguments:
+            - '@crv.repository.restricted_question_repository'
+            - '@crv.repository.restricted_answer_repository'
+
+    crv.factory.answer_result_factory:
+        class: AppBundle\Factory\AnswerResultFactory
 
     # -- REPOSITORY --
     crv.repository.common_doctrine_repository:
@@ -56,6 +128,79 @@ services:
             - "@crv.repository.doctrine_account_repository"
             - "@security.authorization_checker"
 
+    crv.repository.doctrine_question_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineQuestionRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.question"
+
+    crv.repository.restricted_question_repository:
+        class: AppBundle\Repository\Restricted\RestrictedQuestionRepository
+        arguments:
+            - "@crv.repository.doctrine_question_repository"
+            - "@security.authorization_checker"
+
+    crv.repository.doctrine_answer_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineAnswerRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.answer"
+
+    crv.repository.restricted_answer_repository:
+        class: AppBundle\Repository\Restricted\RestrictedAnswerRepository
+        arguments:
+            - "@crv.repository.doctrine_answer_repository"
+            - "@security.authorization_checker"
+
+    crv.repository.doctrine_survey_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineSurveyRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.survey"
+
+    crv.repository.restricted_survey_repository:
+        class: AppBundle\Repository\Restricted\RestrictedSurveyRepository
+        arguments:
+            - "@crv.repository.doctrine_survey_repository"
+            - "@security.authorization_checker"
+            - "@crv.business.survey_availability_checker"
+
+    crv.repository.doctrine_cron_survey_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineCronSurveyRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.cron_survey"
+
+    crv.repository.restricted_cron_survey_repository:
+        class: AppBundle\Repository\Restricted\RestrictedCronSurveyRepository
+        arguments:
+            - "@crv.repository.doctrine_cron_survey_repository"
+            - "@security.authorization_checker"
+
+    crv.repository.doctrine_survey_result_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineSurveyResultRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.survey_result"
+
+    crv.repository.restricted_survey_result_repository:
+        class: AppBundle\Repository\Restricted\RestrictedSurveyResultRepository
+        arguments:
+            - "@crv.repository.doctrine_survey_result_repository"
+            - "@security.authorization_checker"
+            - "@crv.business.survey_availability_checker"
+
+    crv.repository.doctrine_answer_result_repository:
+        class: AppBundle\Repository\Doctrine\DoctrineAnswerResultRepository
+        arguments:
+            - "@crv.repository.common_doctrine_repository"
+            - "@crv.doctrine_entity_repository.answer_result"
+
+    crv.repository.restricted_answer_result_repository:
+        class: AppBundle\Repository\Restricted\RestrictedAnswerResultRepository
+        arguments:
+            - "@crv.repository.doctrine_answer_result_repository"
+            - "@security.authorization_checker"
 
     # -- HANDLER --
     crv.handler.restricted_user_handler:
@@ -65,11 +210,11 @@ services:
             - "@crv.repository.restricted_user_repository"
 
     crv.handler.admin_user_handler:
-            class: AppBundle\Handler\AdminUserHandler
-            arguments:
-                - "@crv.form.handler.restricted_user_form_handler"
-                - "@crv.form.handler.admin_user_form_handler"
-                - "@crv.repository.restricted_user_repository"
+        class: AppBundle\Handler\AdminUserHandler
+        arguments:
+            - "@crv.form.handler.restricted_user_form_handler"
+            - "@crv.form.handler.admin_user_form_handler"
+            - "@crv.repository.restricted_user_repository"
 
     crv.handler.restricted_account_handler:
         class: AppBundle\Handler\AccountHandler
@@ -78,6 +223,46 @@ services:
             - "@crv.data_transformer.account"
             - "@crv.repository.restricted_account_repository"
             - "@crv.factory.account_factory"
+
+    crv.handler.restricted_answer_handler:
+        class: AppBundle\Handler\AnswerHandler
+        arguments:
+            - "@crv.form.handler.answer_form_handler"
+            - "@crv.repository.restricted_answer_repository"
+            - "@crv.factory.answer_factory"
+            - "@crv.data_transformer.answer"
+
+    crv.handler.restricted_question_handler:
+        class: AppBundle\Handler\QuestionHandler
+        arguments:
+            - "@crv.form.handler.question_form_handler"
+            - "@crv.repository.restricted_question_repository"
+            - "@crv.factory.question_factory"
+            - "@crv.data_transformer.question"
+
+    crv.handler.restricted_survey_handler:
+        class: AppBundle\Handler\SurveyHandler
+        arguments:
+            - "@crv.form.handler.survey_form_handler"
+            - "@crv.repository.restricted_survey_repository"
+            - "@crv.factory.survey_factory"
+            - "@crv.data_transformer.survey"
+
+    crv.handler.restricted_cron_survey_handler:
+        class: AppBundle\Handler\CronSurveyHandler
+        arguments:
+            - "@crv.form.handler.cron_survey_form_handler"
+            - "@crv.repository.restricted_cron_survey_repository"
+            - "@crv.factory.cron_survey_factory"
+            - "@crv.data_transformer.cron_survey"
+
+    crv.handler.restricted_survey_result_handler:
+        class: AppBundle\Handler\SurveyResultHandler
+        arguments:
+            - "@crv.form.handler.survey_result_form_handler"
+            - "@crv.repository.restricted_survey_result_repository"
+            - "@crv.factory.survey_result_factory"
+            - "@crv.data_transformer.survey_result"
 
     # -- SECURITY ---
     crv.security.authorization.voter.user_voter:
@@ -94,6 +279,42 @@ services:
 
     crv.security.authorization.voter.admin_user_voter:
         class: AppBundle\Security\Authorization\Voter\AdminUserVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.answer_voter:
+        class: AppBundle\Security\Authorization\Voter\AnswerVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.question_voter:
+        class: AppBundle\Security\Authorization\Voter\QuestionVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.survey_voter:
+        class: AppBundle\Security\Authorization\Voter\SurveyVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.cron_survey_voter:
+        class: AppBundle\Security\Authorization\Voter\CronSurveyVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.survey_result_voter:
+        class: AppBundle\Security\Authorization\Voter\SurveyResultVoter
+        public: false
+        tags:
+           - { name: security.voter }
+
+    crv.security.authorization.voter.answer_result_voter:
+        class: AppBundle\Security\Authorization\Voter\AnswerResultVoter
         public: false
         tags:
            - { name: security.voter }
@@ -130,9 +351,46 @@ services:
     crv.form.type.restricted_account:
         class: AppBundle\Form\Type\AccountType
         arguments:
-            - "@crv.repository.doctrine_user_repository"
+            - "@crv.repository.restricted_user_repository"
         tags:
             - { name: form.type, alias: restricted_account_form }
+
+    crv.form.type.answer:
+        class: AppBundle\Form\Type\AnswerType
+        tags:
+            - { name: form.type, alias: answer_form }
+
+    crv.form.type.question:
+        class: AppBundle\Form\Type\QuestionType
+        arguments:
+            - "@crv.repository.restricted_answer_repository"
+        tags:
+            - { name: form.type, alias: question_form }
+
+    crv.form.type.survey:
+        class: AppBundle\Form\Type\SurveyType
+        arguments:
+            - "@crv.repository.restricted_question_repository"
+        tags:
+            - { name: form.type, alias: survey_form }
+
+    crv.form.type.cron_survey:
+        class: AppBundle\Form\Type\CronSurveyType
+        arguments:
+            - "@crv.repository.restricted_survey_repository"
+        tags:
+            - { name: form.type, alias: cron_survey_form }
+
+    crv.form.type.survey_result:
+        class: AppBundle\Form\Type\SurveyResultType
+        arguments:
+            - "@crv.repository.restricted_user_repository"
+            - "@crv.repository.restricted_survey_repository"
+            - "@crv.repository.restricted_answer_result_repository"
+        tags:
+            - { name: form.type, alias: survey__form }
+
+
 
     # -- FORM HANDLER -- #
     crv.form.handler.user_form_handler:
@@ -165,6 +423,52 @@ services:
              - "@form.factory"
              - "@crv.form.type.restricted_account"
 
+    crv.form.handler.answer_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.answer"
+
+    crv.form.handler.question_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.question"
+
+    crv.form.handler.survey_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.survey"
+
+    crv.form.handler.cron_survey_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.cron_survey"
+
+    crv.form.handler.survey_result_form_handler:
+         class: AppBundle\Form\Handler\FormHandler
+         arguments:
+             - "@form.factory"
+             - "@crv.form.type.survey_result"
+
+
     # --  DATA TRANSFORMERS -- #
     crv.data_transformer.account:
         class: AppBundle\DataTransformer\AccountDataTransformer
+
+    crv.data_transformer.answer:
+        class: AppBundle\DataTransformer\AnswerDataTransformer
+
+    crv.data_transformer.question:
+        class: AppBundle\DataTransformer\QuestionDataTransformer
+
+    crv.data_transformer.survey:
+        class: AppBundle\DataTransformer\SurveyDataTransformer
+
+    crv.data_transformer.cron_survey:
+        class: AppBundle\DataTransformer\CronSurveyDataTransformer
+
+    crv.data_transformer.survey_result:
+        class: AppBundle\DataTransformer\SurveyResultDataTransformer

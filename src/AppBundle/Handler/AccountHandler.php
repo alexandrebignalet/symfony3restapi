@@ -87,8 +87,11 @@ class AccountHandler implements HandlerInterface
             Request::METHOD_POST,
             $options
         );
+
         $account = $this->factory->createFromDTO($accountDTO);
+
         $this->repository->save($account);
+
         return $account;
     }
 
@@ -101,17 +104,23 @@ class AccountHandler implements HandlerInterface
     public function patch($account, array $parameters, array $options = [])
     {
         $this->guardAccountImplementsInterface($account);
+
         /** @var AccountInterface $account */
         $accountDTO = $this->dataTransformer->convertToDTO($account);
+
         $accountDTO = $this->formHandler->handle(
             $accountDTO,
             $parameters,
             Request::METHOD_PATCH,
             $options
         );
+
         $this->repository->refresh($account);
+
         $account = $this->dataTransformer->updateFromDTO($account, $accountDTO);
+
         $this->repository->save($account);
+
         return $account;
     }
     /**

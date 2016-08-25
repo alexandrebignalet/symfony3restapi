@@ -32,7 +32,7 @@ class UserAdminSetupContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given there are admin users with the following details:
+     * @Given there are Admin Users with the following details:
      * @param TableNode $users
      */
     public function thereAreAdminUsersWithTheFollowingDetails(TableNode $users)

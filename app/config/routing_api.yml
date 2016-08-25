@@ -5,3 +5,23 @@ users:
 accounts:
     type: rest
     resource: AppBundle\Controller\AccountsController
+
+answers:
+    type: rest
+    resource: AppBundle\Controller\AnswersController
+
+questions:
+    type: rest
+    resource: AppBundle\Controller\QuestionsController
+
+surveys:
+    type: rest
+    resource: AppBundle\Controller\SurveysController
+
+cron_surveys:
+    type: rest
+    resource: AppBundle\Controller\CronSurveysController
+
+survey_results:
+    type: rest
+    resource: AppBundle\Controller\SurveyResultsController
