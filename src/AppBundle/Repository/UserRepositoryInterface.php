@@ -32,4 +32,9 @@ interface UserRepositoryInterface
      * @return mixed
      */
     public function findAll();
+
+    /**
+     * @return UserInterface
+     */
+    public function findCurrent();
 }

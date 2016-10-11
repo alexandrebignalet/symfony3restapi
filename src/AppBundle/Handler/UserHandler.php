@@ -40,6 +40,14 @@ class UserHandler implements HandlerInterface
     }
 
     /**
+     * @return UserInterface
+     */
+    public function getCurrent()
+    {
+        return $this->repository->findCurrent();
+    }
+
+    /**
      * @param int $limit
      * @param int $offset
      * @return mixed

@@ -23,7 +23,6 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
 
             new Csa\Bundle\GuzzleBundle\CsaGuzzleBundle(),
-            /*new Oneup\FlysystemBundle\OneupFlysystemBundle(),*/
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
 
 

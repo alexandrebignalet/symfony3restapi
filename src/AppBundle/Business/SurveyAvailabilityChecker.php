@@ -12,8 +12,6 @@ namespace AppBundle\Business;
 use AppBundle\Model\CronSurveyInterface;
 use AppBundle\Model\SurveyInterface;
 use AppBundle\Repository\CronSurveyRepositoryInterface;
-use AppBundle\Repository\SurveyResultRepositoryInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SurveyAvailabilityChecker implements SurveyAvailabilityCheckerInterface

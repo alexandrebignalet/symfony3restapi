@@ -1,4 +1,13 @@
-web:
+app:
+   restart: always
+   image: tutum/apache-php
+   ports:
+      - "8082:80"
+   volumes:
+      - /home/jiddy/workspace/fitformapp:/var/www/html
+   environment:
+      - ALLOW_OVERRIDE=true
+api:
    restart: always
    image: tutum/apache-php
    ports:

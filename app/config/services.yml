@@ -109,6 +109,7 @@ services:
         class: AppBundle\Repository\Doctrine\DoctrineUserRepository
         arguments:
             - "@crv.repository.common_doctrine_repository"
+            - "@security.token_storage"
 
     crv.repository.restricted_user_repository:
         class: AppBundle\Repository\Restricted\RestrictedUserRepository

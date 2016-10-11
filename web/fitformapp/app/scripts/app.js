@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc overview
- * @name webappApp
+ * @name fitformappApp
  * @description
- * # webappApp
+ * # fitformappApp
  *
  * Main module of the application.
  */
 angular
-  .module('webappApp', [
+  .module('fitformappApp', [
     'ngResource'
   ]);

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use FOS\UserBundle\Model\User as BaseUser;
 use AppBundle\Model\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,10 +54,6 @@ class User extends BaseUser implements UserInterface
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="account_id", referencedColumnName="id")}
      * )
-     * @JMSSerializer\Expose
-     * @JMSSerializer\Type("ArrayCollection")
-     * @JMSSerializer\MaxDepth(2)
-     * @JMSSerializer\Groups({"users_all"})
      */
     private $accounts;
 
@@ -64,14 +61,47 @@ class User extends BaseUser implements UserInterface
      * @var string Plain password. Used for model validation. Must not be persisted.
      */
     protected $plainPassword;
-    /**
-     * @var boolean Shows that the user is enabled
-     */
-    protected $enabled;
+
     /**
      * @var array Array, role(s) of the user
+     * @JMSSerializer\Expose
+     * @JMSSerializer\SerializedName("authorities")
+     * @JMSSerializer\Groups({"users_all"})
      */
     protected $roles;
+
+    /**
+     * @var datetime lastLogin
+     * @JMSSerializer\Expose
+     * @JMSSerializer\SerializedName("last_login")
+     * @JMSSerializer\Groups({"users_all"})
+     */
+    protected $lastLogin;
+
+    /**
+     * @var string firstname
+     * @ORM\Column(type="string", name="firstname")
+     * @JMSSerializer\Expose
+     * @JMSSerializer\Groups({"users_all"})
+     */
+    private $firstname;
+
+    /**
+     * @var string lastname
+     * @ORM\Column(type="string", name="lastname")
+     * @JMSSerializer\Expose
+     * @JMSSerializer\Groups({"users_all"})
+     */
+    private $lastname;
+
+    /**
+     * @var integer age
+     * @ORM\Column(type="integer", name="age")
+     * @JMSSerializer\Expose
+     * @JMSSerializer\Groups({"users_all"})
+     */
+    protected $age;
+
 
     /**
      * User constructor.
@@ -130,12 +160,65 @@ class User extends BaseUser implements UserInterface
     /**
      * @return string
      */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * @param string $firstname
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param string $lastname
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getAge()
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param integer $age
+     */
+    public function setAge($age)
+    {
+        $this->age = $age;
+    }
+
+    /**
+     * @return string
+     */
     function jsonSerialize()
     {
         return [
-            'id'       => $this->id,
-            'username' => $this->username,
-            'accounts' => $this->accounts,
+            'id'            => $this->id,
+            'username'      => $this->username,
+            'email'         => $this->email,
+            'authorities'   => $this->roles,
+            'last_login'    => $this->lastLogin,
+            'firstname'     => $this->firstname,
+            'lastname'      => $this->lastname,
+            'age'           => $this->age
         ];
     }
 }

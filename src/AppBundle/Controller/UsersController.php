@@ -49,6 +49,31 @@ class UsersController extends FOSRestController implements ClassResourceInterfac
     }
 
     /**
+     * Get the current logged in User.
+     *
+     * @ApiDoc(
+     *   output = "AppBundle\Entity\User",
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when not found"
+     *   }
+     * )
+     *
+     *
+     * @throws NotFoundHttpException when does not exist
+     *
+     * @return View
+     */
+    public function meAction()
+    {
+        $user = $this->getUserHandler()->getCurrent();
+
+        $view = $this->view($user);
+
+        return $view;
+    }
+
+    /**
      * Gets a collection of Users if Admin.
      *
      * @ApiDoc(

@@ -59,4 +59,16 @@ class RestrictedUserRepository extends RestrictedRepository implements UserRepos
 
         return $users;
     }
+
+    /**
+     * @return UserInterface
+     */
+    public function findCurrent()
+    {
+        $user = $this->repository->findCurrent();
+
+        $this->denyAccessUnlessGranted('view', $user);
+
+        return $user;
+    }
 }

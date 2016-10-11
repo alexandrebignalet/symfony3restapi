@@ -1,8 +1,11 @@
 <?php
 namespace AppBundle\Repository\Doctrine;
+
 use AppBundle\Model\UserInterface;
 use AppBundle\Repository\RepositoryInterface;
 use AppBundle\Repository\UserRepositoryInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DoctrineUserRepository implements UserRepositoryInterface, RepositoryInterface
 {
@@ -13,12 +16,19 @@ class DoctrineUserRepository implements UserRepositoryInterface, RepositoryInter
     private $commonRepository;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
      * DoctrineUserRepository constructor.
      * @param CommonDoctrineRepository $commonRepository
+     * @param UserManagerInterface $userManager
      */
-    public function __construct(CommonDoctrineRepository $commonRepository)
+    public function __construct(CommonDoctrineRepository $commonRepository, TokenStorageInterface $tokenStorage)
     {
         $this->commonRepository = $commonRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -58,5 +68,15 @@ class DoctrineUserRepository implements UserRepositoryInterface, RepositoryInter
     public function findAll()
     {
         return $this->commonRepository->getEntityManager()->getRepository('AppBundle:User')->findAll();
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function findCurrent()
+    {
+        return $this->tokenStorage->getToken()->getUser();
+
+
     }
 }
